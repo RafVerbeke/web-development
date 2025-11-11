@@ -1,0 +1,14 @@
+.checklist li {
+    list-style-type: none;
+    margin-bottom: 6px;
+}
+
+.checklist li:before {
+    content: url("https://e7.pngegg.com/pngimages/716/420/png-clipart-checkbox-rectangle-square-computer-icons-checkboxes-angle-check-mark-thumbnail.png");
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.checklist li.checked:before {
+    content: url("https://images.rawpixel.com/image_png_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI0LTExL3YxMTc2LXdhLWVsZW1lbnQtMTgzLXBfMS5wbmc.png");
+}
