@@ -1,0 +1,47 @@
+
+.vrienden tbody .alt td {
+    background: #E1EEF4;
+    color: #00496B;
+}
+
+#vrienden {
+    width: 80%;
+    margin: 40px auto;
+}
+
+#vrienden h2 {
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+}
+.vrienden-tabel {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+    background-color: #fff;
+    border: 1px solid #999;
+}
+
+.vrienden-tabel th {
+    background-color: #3a4d32;
+    color: white;
+    padding: 10px;
+    border: 1px solid #666;
+    text-align: left;
+}
+
+.vrienden-tabel td {
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.vrienden-tabel tr.alt td {
+    background-color: #f2f2f2;
+}
+
+.vrienden-tabel tbody tr:hover td {
+    background-color: #e6ffe6;
+}
+.vrienden-tabel .onbekend {
+    background-color: #ff9999;
+    font-weight: bold;
+}
