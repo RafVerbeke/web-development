@@ -1,0 +1,80 @@
+body {
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 1.2em;
+    background-color: #a7cece;
+    color: #444444;
+}
+
+#wrapper {
+    width: 95%;
+    margin: 0 auto;
+}
+
+#imgHeader {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+#content {
+    width: 70%;
+    float: left;
+    margin-right: 30px;
+}
+
+#elixirs {
+    width: calc(30% - 30px);
+    float: left;
+    margin: 30px 0;
+    padding: 20px;
+
+    border: 2px dotted white;
+    background-color: #a7cece;
+
+    box-sizing: border-box;
+}
+
+h1, h2 {
+    color: #007e7e;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 150%;
+}
+
+h2 {
+    font-size: 130%;
+}
+
+#elixirs h1 {
+    color: #8a4b00;
+}
+
+#elixirs h2 {
+    color: #c0392b;
+}
+
+#elixirs a:hover {
+    background-color: brown;
+    color: white;
+}
+
+#elixirs p {
+    margin-bottom: 15px;
+}
+
+.color {
+    background-color: #e0f2f2;
+    padding: 15px;
+}
+
+footer {
+    clear: both;
+    font-size: 0.6em;
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+}

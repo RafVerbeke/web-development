@@ -1,0 +1,11 @@
+section {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid black;
+    float: left;
+    box-sizing: border-box;
+}
+
+.witteruimte {
+    padding: 10px;
+}
