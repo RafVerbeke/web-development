@@ -1,0 +1,21 @@
+body
+{
+    font-size: 1.25em;
+    width: 95%;
+    margin: auto;
+}
+article
+{
+    margin: 5px;
+    border: 1px solid;
+    padding: 10px;
+    overflow: auto;
+}
+article:nth-of-type(odd) img {
+    float:left;
+    margin-right: 10px;
+}
+article:nth-of-type(even) img {
+    float:right;
+    margin-left: 10px;
+}
