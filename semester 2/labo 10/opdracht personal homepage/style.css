@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+
+header {
+    background-color: #444;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+section {
+    width: 80%;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+section h2 {
+    color: #333;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+}
+
+ul {
+    list-style-type: square;
+    padding-left: 20px;
+}
+
+ul li {
+    margin-bottom: 5px;
+}
+a {
+    color: #0055cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+.profiel {
+    width: 300px;
+    display: block;
+    margin-top: 15px;
+    border-radius: 8px;
+}
+
+.interesse-item {
+    margin-top: 20px;
+}
+
+.interesse-item img {
+    width: 200px;
+    border-radius: 6px;
+    margin-top: 10px;
+}

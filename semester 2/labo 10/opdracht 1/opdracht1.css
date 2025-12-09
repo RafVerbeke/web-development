@@ -1,0 +1,45 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font: 1.2em/1.2 Helvetica, aria, sans-serif;
+    margin: 0 3%;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+figure {
+    background: black;
+    color: red;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    margin: 0 0 25px 0;
+
+    width: 100%;
+}
+@media screen and (min-width: 768px) {
+    figure {
+        width: 50%;
+        background: #444;
+    }
+}
+
+
+@media screen and (min-width: 992px) {
+    figure {
+        width: 33.333%;
+        background: #888;
+    }
+}
