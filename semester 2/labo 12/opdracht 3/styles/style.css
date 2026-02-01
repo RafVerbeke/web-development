@@ -1,0 +1,118 @@
+html {
+    background-color: #333;
+    font-family: helvetica;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+* {
+    padding: 10px;
+}
+
+
+header {
+    background-color: #ddaa00;
+    color: white;
+    text-align: center;
+}
+
+footer {
+    background-color: #ddaa00;
+}
+
+nav {
+    background-color: #ccc;
+}
+
+main {
+    background-color: grey;
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    flex-direction: column;
+}
+
+body {
+    font-size: 1em;
+    font-family: helvetica, sans-serif;
+    margin: 5px;
+    border: white 5px solid;
+    background-color: white;
+    width: 95%;
+}
+
+section {
+    margin: 5px;
+}
+
+section a{
+    border: 1px #333;
+}
+
+nav {
+    margin: 0 5px;
+    padding: 5px 2px;
+    display: flex;
+    justify-content: space-between;
+}
+
+nav {
+    margin: 0 5px;
+    padding: 5px 2px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+nav a {
+    text-align: center;
+    border: 2px #333 solid;
+    width: 15%;
+    margin: 0 10px;
+    background-color: white;
+    text-decoration: none;
+    font-weight: bold;
+    color: #ddaa00;
+}
+
+h1 {
+    margin: 0;
+}
+
+img {
+    padding: 0;
+    width: auto;
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+
+div  a {
+    border: 1px #333 solid;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+    font-size: 1.2em;
+    color: grey;
+}
+
+footer p {
+
+    text-align: center;
+    color: white;
+}
+
+footer {
+    border-top: 10px black solid;
+}
+
+@media screen and (min-width: 700px) {
+    main {
+        flex-direction: row;
+    }
+}

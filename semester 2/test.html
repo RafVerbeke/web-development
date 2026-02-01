@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkinVenture | Gem Edition</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#07050b',      // Deepest Dark Purple/Black
+                        sidebar: '#0d0915', // Dark Sidebar
+                        panel: '#130d21',   // Main Panels
+                        accent: '#8b5cf6',  // Violet
+                        accentLight: '#a78bfa',
+                        gold: '#fbbf24',    // Gold
+                        t: '#ef4444',       // Terrorist Red
+                        ct: '#3b82f6',      // CT Blue
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Roboto Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'neon': '0 0 25px rgba(139, 92, 246, 0.5)',
+                        'neon-gold': '0 0 25px rgba(251, 191, 36, 0.5)',
+                        'neon-t': '0 0 25px rgba(239, 68, 68, 0.4)',
+                        'neon-ct': '0 0 25px rgba(59, 130, 246, 0.4)',
+                        'glass-edge': 'inset 0 1px 1px rgba(255,255,255,0.1), 0 4px 10px rgba(0,0,0,0.5)',
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto+Mono:wght@500;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #07050b;
+            color: #e2e8f0;
+            /* Subtle background pattern */
+            background-image:
+                    radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%),
+                    url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRaPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cGF0aCBkPSJNMjAgMjBMMCAwSDQwTDIwIDIwek0yMCAyMEw0MCA0MEgwTDIwIDIweiIgZmlsbD0icmdiYSgyNTUsMjU1LTI1NSwwLjAyKSIvPjwvc3ZnPg==');
+            overflow-x: hidden;
+        }
+
+        /* Premium Glassmorphism */
+        .glass {
+            background: rgba(19, 13, 33, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            box-shadow: var(--tw-shadow-glass-edge);
+        }
+        .glass-panel-dark {
+            background: rgba(10, 8, 15, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #07050b; }
+        ::-webkit-scrollbar-thumb { background: #8b5cf6; border-radius: 3px; }
+
+        /* Rarity Styles with Glows */
+        .r-gray { border-color: #94a3b8; --glow-color: #94a3b8; }
+        .r-blue { border-color: #3b82f6; --glow-color: #3b82f6; }
+        .r-purple { border-color: #a855f7; --glow-color: #a855f7; }
+        .r-pink { border-color: #ec4899; --glow-color: #ec4899; }
+        .r-red { border-color: #ef4444; --glow-color: #ef4444; }
+        .r-gold { border-color: #fbbf24; --glow-color: #fbbf24; }
+
+        .item-card {
+            border-bottom: 3px solid transparent;
+            background: linear-gradient(180deg, rgba(19,13,33,0.9) 0%, rgba(7,5,11,1) 100%);
+            box-shadow: inset 0 -15px 30px -10px var(--glow-color);
+        }
+        .item-card i {
+            filter: drop-shadow(0 4px 8px var(--glow-color));
+        }
+
+        /* The Laser Line */
+        .laser-line {
+            position: absolute;
+            left: 50%; top: 0; bottom: 0; width: 2px;
+            background: #fbbf24; transform: translateX(-50%); z-index: 30;
+            box-shadow: 0 0 15px #fbbf24, 0 0 5px #fff;
+        }
+
+        /* Animations */
+        .reel-container {
+            overflow: hidden; position: relative; width: 100%;
+            background: #040307;
+            box-shadow: inset 0 0 40px #000;
+            border-radius: 0.75rem; border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+        .reel-strip { display: flex; height: 100%; padding: 0; will-change: transform; align-items: center; }
+        .hidden-view { display: none !important; }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Sidebar Nav Active State */
+        .nav-link.active {
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.2) 0%, transparent 100%);
+            border-left: 4px solid #8b5cf6;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
+        }
+    </style>
+</head>
+<body class="flex h-screen">
+
+<aside class="w-20 md:w-64 bg-sidebar border-r border-accent/10 flex-shrink-0 flex flex-col h-full fixed left-0 top-0 z-50 shadow-2xl transition-all overflow-hidden group">
+    <div class="h-20 flex items-center justify-center md:justify-start md:px-6 border-b border-accent/10">
+        <i class="fa-solid fa-gem text-accent text-3xl md:mr-3 filter drop-shadow-[0_0_10px_rgba(139,92,246,0.8)]"></i>
+        <span class="hidden md:block font-black text-xl tracking-widest uppercase italic text-white">Skin<span class="text-accent">Gem</span></span>
+    </div>
+
+    <nav class="flex-grow py-6 space-y-2">
+        <button onclick="switchView('roulette')" id="nav-roulette" class="nav-link w-full flex items-center px-4 md:px-6 py-4 text-slate-400 hover:bg-accent/10 hover:text-white transition-all group">
+            <div class="w-10 flex justify-center"><i class="fa-solid fa-circle-notch text-xl transition-transform group-hover:rotate-180"></i></div>
+            <span class="hidden md:block font-bold uppercase tracking-wider text-sm">Roulette</span>
+        </button>
+        <button onclick="switchView('cases')" id="nav-cases" class="nav-link w-full flex items-center px-4 md:px-6 py-4 text-slate-400 hover:bg-accent/10 hover:text-white transition-all group">
+            <div class="w-10 flex justify-center"><i class="fa-solid fa-box-open text-xl transition-transform group-hover:scale-110"></i></div>
+            <span class="hidden md:block font-bold uppercase tracking-wider text-sm">Cases</span>
+        </button>
+        <button onclick="switchView('battles')" id="nav-battles" class="nav-link w-full flex items-center px-4 md:px-6 py-4 text-slate-400 hover:bg-accent/10 hover:text-white transition-all group">
+            <div class="w-10 flex justify-center"><i class="fa-solid fa-swords text-xl transition-transform group-hover:-translate-y-1"></i></div>
+            <span class="hidden md:block font-bold uppercase tracking-wider text-sm">Battles</span>
+        </button>
+    </nav>
+
+    <div class="p-4 text-center hidden md:block text-xs text-slate-600 border-t border-accent/10">
+        &copy; 2026 SkinGem Sim
+    </div>
+</aside>
+
+<div class="flex-grow flex flex-col h-full ml-20 md:ml-64 bg-bg/50">
+
+    <header class="h-20 bg-sidebar/50 backdrop-blur-md border-b border-accent/10 flex items-center justify-end px-8 sticky top-0 z-40">
+        <div class="flex items-center gap-6">
+            <div class="glass px-6 py-2 rounded-full flex items-center gap-4 border-accent/20">
+                <div class="flex flex-col items-end leading-none">
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Balance</span>
+                    <span id="balance" class="font-mono font-bold text-2xl text-gold drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]">100.00</span>
+                </div>
+                <button onclick="addFunds()" class="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white w-10 h-10 rounded-full flex items-center justify-center transition shadow-lg border border-green-400/50 relative overflow-hidden group">
+                    <span class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform"></span>
+                    <i class="fa-solid fa-plus relative z-10"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow p-6 overflow-y-auto">
+
+        <div id="view-roulette" class="hidden-view animate-fade-in h-full flex flex-col justify-center max-w-7xl mx-auto">
+            <div class="glass rounded-3xl p-1 shadow-neon">
+                <div class="glass-panel-dark rounded-[1.4rem] p-8">
+                    <div class="reel-container h-48 mb-12 relative bg-black/60">
+                        <div class="laser-line"></div>
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 text-gold"><i class="fa-solid fa-caret-down text-2xl"></i></div>
+                        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 text-gold"><i class="fa-solid fa-caret-up text-2xl"></i></div>
+
+                        <div id="roulette-strip" class="reel-strip"></div>
+                        <div class="absolute inset-0 pointer-events-none bg-gradient-to-r from-black via-transparent to-black z-20 opacity-80"></div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-8 bg-black/30 p-4 rounded-2xl border border-accent/10 mb-8">
+                        <div class="flex items-center gap-4 w-full md:w-auto">
+                            <span class="text-slate-400 font-bold uppercase text-xs tracking-widest">Bet Amount</span>
+                            <div class="glass px-4 py-2 rounded-lg border-accent/20 flex items-center gap-2 flex-grow md:flex-grow-0">
+                                <i class="fa-solid fa-coins text-gold"></i>
+                                <input type="number" id="roulette-bet" value="10" class="bg-transparent border-none outline-none font-mono text-xl text-white w-24 ml-2">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="setBet(10)" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-accent/20 border border-white/5 text-xs font-bold text-slate-300 transition">+10</button>
+                            <button onclick="setBet(50)" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-accent/20 border border-white/5 text-xs font-bold text-slate-300 transition">+50</button>
+                            <button onclick="setBet(100)" class="px-4 py-2 rounded-lg bg-white/5 hover:bg-accent/20 border border-white/5 text-xs font-bold text-slate-300 transition">+100</button>
+                            <button onclick="clearBet()" class="px-4 py-2 rounded-lg bg-red-900/20 hover:bg-red-900/40 border border-red-500/20 text-xs font-bold text-red-400 transition">CLEAR</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <button onclick="playRoulette('red')" class="group relative h-32 rounded-2xl overflow-hidden transition-all transform hover:-translate-y-2 hover:shadow-neon-t">
+                            <div class="absolute inset-0 bg-gradient-to-br from-red-900 to-black opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="absolute inset-0 border-2 border-red-600/30 rounded-2xl group-hover:border-red-500 transition-colors"></div>
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                            <div class="relative z-10 h-full flex flex-col items-center justify-center">
+                                <i class="fa-solid fa-mask text-5xl text-red-500 mb-2 filter drop-shadow-[0_0_10px_rgba(239,68,68,0.5)] group-hover:scale-110 transition"></i>
+                                <span class="font-black text-xl uppercase italic tracking-wider">Terrorist (2x)</span>
+                            </div>
+                        </button>
+                        <button onclick="playRoulette('green')" class="group relative h-32 rounded-2xl overflow-hidden transition-all transform hover:-translate-y-2 hover:shadow-neon-gold">
+                            <div class="absolute inset-0 bg-gradient-to-br from-yellow-900 to-black opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="absolute inset-0 border-2 border-gold/30 rounded-2xl group-hover:border-gold transition-colors"></div>
+                            <div class="relative z-10 h-full flex flex-col items-center justify-center">
+                                <i class="fa-solid fa-crown text-6xl text-gold mb-0 filter drop-shadow-[0_0_15px_rgba(251,191,36,0.8)] group-hover:scale-110 transition animate-pulse"></i>
+                                <span class="font-black text-xl uppercase italic tracking-wider -mt-2">Jackpot (14x)</span>
+                            </div>
+                        </button>
+                        <button onclick="playRoulette('black')" class="group relative h-32 rounded-2xl overflow-hidden transition-all transform hover:-translate-y-2 hover:shadow-neon-ct">
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-900 to-black opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="absolute inset-0 border-2 border-blue-600/30 rounded-2xl group-hover:border-blue-500 transition-colors"></div>
+                            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                            <div class="relative z-10 h-full flex flex-col items-center justify-center">
+                                <i class="fa-solid fa-shield-halved text-5xl text-blue-500 mb-2 filter drop-shadow-[0_0_10px_rgba(59,130,246,0.5)] group-hover:scale-110 transition"></i>
+                                <span class="font-black text-xl uppercase italic tracking-wider">Counter-T (2x)</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div id="roulette-msg" class="text-center mt-6 h-8 text-2xl font-bold text-gold font-mono"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="view-cases" class="hidden-view animate-fade-in">
+            <h2 class="text-3xl font-black uppercase italic tracking-widest mb-8 text-white filter drop-shadow-[0_0_10px_rgba(139,92,246,0.5)]">Open Cases</h2>
+            <div id="cases-grid" class="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6 gap-6">
+            </div>
+
+            <div id="case-opener" class="hidden-view mt-4">
+                <button onclick="closeCaseOpener()" class="mb-6 px-6 py-2 glass rounded-full text-slate-300 hover:text-white flex items-center gap-2 font-bold uppercase text-xs tracking-widest transition hover:border-accent/50">
+                    <i class="fa-solid fa-chevron-left"></i> Back to Cases
+                </button>
+
+                <div class="glass rounded-3xl p-1 shadow-neon relative overflow-hidden">
+                    <div class="glass-panel-dark rounded-[1.4rem] p-12 relative text-center">
+
+                        <div class="mb-10 relative">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-20 blur-xl">
+                                <i id="opening-case-icon-bg" class="fa-solid fa-box text-9xl text-accent"></i>
+                            </div>
+                            <h2 id="opening-case-name" class="text-5xl font-black italic text-white uppercase tracking-wider mb-4 drop-shadow-lg relative z-10">Case Name</h2>
+                            <span id="btn-cost-display" class="font-mono text-2xl text-gold border border-gold/30 bg-gold/10 px-6 py-2 rounded-full relative z-10">Cost: 0.00</span>
+                        </div>
+
+                        <div class="reel-container h-80 border-t border-b border-accent/30 bg-black/80">
+                            <div class="laser-line"></div>
+                            <div class="absolute top-0 left-1/2 -translate-x-1/2 text-gold"><i class="fa-solid fa-caret-down text-3xl"></i></div>
+                            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 text-gold"><i class="fa-solid fa-caret-up text-3xl"></i></div>
+
+                            <div id="case-strip" class="reel-strip"></div>
+                            <div class="absolute inset-0 pointer-events-none bg-gradient-to-r from-black via-transparent to-black z-20 opacity-70"></div>
+                        </div>
+
+                        <div class="text-center mt-12">
+                            <button onclick="triggerCaseSpin()" class="bg-gradient-to-r from-accent to-violet-600 hover:from-violet-600 hover:to-accent text-white px-20 py-6 rounded-xl font-black text-2xl shadow-neon transition transform hover:scale-105 active:scale-95 uppercase tracking-[0.2em] border border-accent/50 relative overflow-hidden group">
+                                <span class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
+                                <span class="relative z-10">OPEN CASE</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="view-battles" class="hidden-view animate-fade-in h-full flex flex-col">
+
+            <div id="battle-config" class="glass p-8 rounded-3xl border-accent/20 max-w-7xl mx-auto w-full shadow-2xl">
+                <div class="flex items-center gap-6 mb-10 border-b border-accent/10 pb-8">
+                    <div class="p-4 bg-gradient-to-br from-accent to-violet-800 rounded-2xl shadow-neon">
+                        <i class="fa-solid fa-swords text-4xl text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-4xl font-black uppercase italic tracking-wide text-white">Case Battles</h2>
+                        <p class="text-accentLight font-bold tracking-wider">Compete against bots for the pot</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+                    <div class="xl:col-span-3 space-y-8">
+                        <div>
+                            <label class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block px-2">Game Mode</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="setBattleMode('1v1')" class="battle-mode-btn glass hover:border-accent/50 p-4 rounded-xl text-sm font-bold active-mode transition-all" data-mode="1v1">1 vs 1</button>
+                                <button onclick="setBattleMode('2v2')" class="battle-mode-btn glass hover:border-accent/50 p-4 rounded-xl text-sm font-bold transition-all" data-mode="2v2">2 vs 2 <span class="text-accentLight text-xs block">(Team)</span></button>
+                                <button onclick="setBattleMode('1v1v1')" class="battle-mode-btn glass hover:border-accent/50 p-4 rounded-xl text-sm font-bold transition-all" data-mode="1v1v1">1v1v1</button>
+                                <button onclick="setBattleMode('1v1v1v1')" class="battle-mode-btn glass hover:border-accent/50 p-4 rounded-xl text-sm font-bold transition-all" data-mode="1v1v1v1">Chaos</button>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel-dark p-6 rounded-2xl border-accent/20 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent pointer-events-none"></div>
+                            <div class="flex justify-between items-center mb-2 relative z-10">
+                                <span class="text-slate-400 text-sm font-bold uppercase tracking-widest">Total Cost</span>
+                                <span id="battle-cost" class="font-mono text-3xl font-bold text-gold drop-shadow-lg">0.00</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs text-slate-500 font-bold uppercase tracking-widest mb-6 relative z-10">
+                                <span>Rounds</span>
+                                <span id="battle-rounds-count" class="text-white">0</span>
+                            </div>
+                            <button onclick="startBattle()" class="w-full bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white font-black py-5 rounded-xl shadow-lg uppercase tracking-[0.2em] transition transform active:scale-95 relative z-10 border border-green-400/30">
+                                Start Battle
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="xl:col-span-9 flex flex-col h-full">
+                        <label class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block px-2">Battle Lineup</label>
+                        <div id="battle-lineup" class="min-h-[100px] bg-black/40 rounded-2xl border border-accent/10 mb-8 flex items-center px-4 gap-3 overflow-x-auto relative">
+                            <span id="battle-empty-msg" class="text-slate-600 text-sm italic font-bold uppercase tracking-widest w-full text-center absolute">Add cases to start...</span>
+                        </div>
+
+                        <label class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 block px-2">Available Cases</label>
+                        <div id="battle-case-picker" class="grid grid-cols-4 md:grid-cols-6 gap-4 overflow-y-auto max-h-[400px] pr-2 custom-scroll p-1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="battle-arena" class="hidden-view w-full flex-grow flex flex-col">
+                <div class="flex justify-center mb-8">
+                    <div class="glass px-10 py-3 rounded-full flex items-center gap-8 border-accent/30 shadow-neon">
+                        <span class="text-accentLight text-sm font-black uppercase tracking-widest">Round</span>
+                        <span class="font-mono font-bold text-2xl text-white"><span id="arena-round" class="text-gold">1</span> <span class="text-slate-600 mx-2">/</span> <span id="arena-total-rounds">10</span></span>
+                    </div>
+                </div>
+
+                <div id="arena-container" class="w-full flex-grow">
+                </div>
+            </div>
+        </div>
+
+    </main> </div> <div id="result-overlay" class="fixed inset-0 z-[100] hidden-view bg-black/90 backdrop-blur-lg flex items-center justify-center">
+    <div class="glass p-1 rounded-[2rem] shadow-2xl max-w-lg w-full mx-4 transform scale-100 transition-all border-accent/30">
+        <div class="glass-panel-dark rounded-[1.8rem] p-10 text-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-b from-accent/10 to-transparent pointer-events-none"></div>
+
+            <div class="w-24 h-24 mx-auto bg-gradient-to-br from-gold to-orange-600 rounded-full flex items-center justify-center shadow-neon-gold mb-8 relative z-10 p-1">
+                <div class="bg-black/30 w-full h-full rounded-full flex items-center justify-center border border-gold/50">
+                    <i class="fa-solid fa-trophy text-4xl text-gold filter drop-shadow-lg"></i>
+                </div>
+            </div>
+            <h2 id="result-title" class="text-4xl font-black text-white uppercase italic mb-4 tracking-wider relative z-10">Victory</h2>
+            <p id="result-msg" class="text-slate-300 mb-10 text-lg font-medium relative z-10">You won 100.00 coins</p>
+            <button onclick="closeResult()" class="bg-accent/20 hover:bg-accent/40 text-white border border-accent/50 px-10 py-4 rounded-xl font-black w-full uppercase tracking-widest transition relative z-10">Continue</button>
+        </div>
+    </div>
+</div>
+
+<div id="win-modal" class="fixed inset-0 z-[100] hidden-view bg-black/95 backdrop-blur-xl flex items-center justify-center" onclick="closeModal()">
+    <div class="transform scale-100 transition-all text-center pointer-events-none relative w-full max-w-2xl">
+        <div class="absolute inset-0 bg-accent/5 blur-3xl rounded-full scale-150 animate-pulse pointer-events-none"></div>
+
+        <div class="text-gold font-black uppercase tracking-[0.5em] text-lg mb-8 animate-bounce relative z-10">New Item Unboxed</div>
+
+        <div id="modal-content" class="pointer-events-auto relative z-10">
+            <div class="relative flex justify-center mb-10">
+                <div id="modal-glow" class="absolute inset-0 bg-accent/30 blur-[60px] rounded-full"></div>
+                <div id="modal-icon" class="text-[10rem] relative z-10 filter drop-shadow-[0_0_50px_rgba(255,255,255,0.4)] transition transform hover:scale-105 duration-500"></div>
+            </div>
+
+            <h2 id="modal-name" class="text-5xl font-black text-white italic uppercase tracking-wider mb-4 text-shadow-lg">Item Name</h2>
+
+            <div class="flex justify-center items-center gap-4 mb-8">
+                <div id="modal-rarity" class="px-4 py-1 rounded-full border text-sm font-black uppercase bg-black/50 backdrop-blur">Rarity</div>
+            </div>
+
+            <div class="glass inline-block rounded-2xl p-6 border-gold/30 relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gold/5 group-hover:bg-gold/10 transition"></div>
+                <div class="text-xs text-gold uppercase font-bold mb-2 tracking-widest">Estimated Value</div>
+                <div id="modal-value" class="text-4xl font-mono font-bold text-white text-shadow">0.00</div>
+            </div>
+        </div>
+        <div class="mt-16 text-slate-500 text-sm uppercase tracking-[0.3em] font-bold pointer-events-auto">Click anywhere to collect</div>
+    </div>
+</div>
+
+
+<script>
+    // --- CONSTANTS ---
+    const CARD_WIDTH = 200;
+    const CARD_WIDTH_SMALL = 160;
+
+    const Rarity = {
+        GRAY: { id: 'Consumer', color: '#94a3b8', class: 'r-gray' },
+        BLUE: { id: 'Industrial', color: '#3b82f6', class: 'r-blue' },
+        PURPLE: { id: 'Restricted', color: '#a855f7', class: 'r-purple' },
+        PINK: { id: 'Classified', color: '#ec4899', class: 'r-pink' },
+        RED: { id: 'Covert', color: '#ef4444', class: 'r-red' },
+        GOLD: { id: 'Knives/Gloves', color: '#fbbf24', class: 'r-gold' }
+    };
+
+    const Icons = {
+        gun: ['fa-gun', 'fa-crosshairs', 'fa-fighter-jet', 'fa-meteor', 'fa-person-rifle'],
+        knife: ['fa-khanda', 'fa-scythe', 'fa-fan', 'fa-feather-pointed', 'fa-grip lines-vertical'],
+        gloves: ['fa-hand-fist', 'fa-hand-holding-hand', 'fa-hand-sparkles'],
+        misc: ['fa-skull', 'fa-biohazard', 'fa-radiation', 'fa-dragon', 'fa-ghost']
+    };
+
+    const Cases = [
+        { id: 1, name: "Recruit", cost: 2, tier: 1, icon: 'fa-box-archive', color: 'text-slate-400' },
+        { id: 2, name: "Urban Ops", cost: 10, tier: 2, icon: 'fa-briefcase', color: 'text-blue-500' },
+        { id: 3, name: "Nightmare", cost: 50, tier: 3, icon: 'fa-ghost', color: 'text-purple-500' },
+        { id: 4, name: "Dragon Lore", cost: 150, tier: 4, icon: 'fa-dragon', color: 'text-pink-500' },
+        { id: 5, name: "High Roller", cost: 500, tier: 5, icon: 'fa-diamond', color: 'text-red-500' },
+        { id: 6, name: "Crown Jewel", cost: 2000, tier: 6, icon: 'fa-crown', color: 'text-gold' }
+    ];
+
+    // --- STATE ---
+    let state = {
+        balance: 100.00,
+        activeCase: null,
+        isSpinning: false,
+        battle: {
+            mode: '1v1',
+            lineup: [],
+            players: []
+        }
+    };
+
+    // --- CORE UTILS ---
+    function updateBalance(amount) {
+        state.balance += amount;
+        const el = document.getElementById('balance');
+        el.innerText = state.balance.toFixed(2);
+        el.classList.add('scale-110', 'text-white');
+        setTimeout(() => el.classList.remove('scale-110', 'text-white'), 300);
+    }
+    function addFunds() { updateBalance(500); }
+    function setBet(amt) { document.getElementById('roulette-bet').value = amt; }
+    function clearBet() { document.getElementById('roulette-bet').value = 0; }
+    function getRandomIcon(type) {
+        const list = Icons[type] || Icons.gun;
+        return list[Math.floor(Math.random() * list.length)];
+    }
+
+    // --- LOOT GENERATION ---
+    function generateLoot(tier) {
+        const r = Math.random();
+        let rarity = Rarity.GRAY;
+        let type = 'gun';
+
+        if (tier === 1) { if (r > 0.98) rarity = Rarity.PURPLE; else if (r > 0.90) rarity = Rarity.BLUE; }
+        else if (tier === 6) { if (r > 0.90) { rarity = Rarity.GOLD; type = 'knife'; } else if (r > 0.60) rarity = Rarity.RED; else if (r > 0.30) rarity = Rarity.PINK; else rarity = Rarity.PURPLE; }
+        else { if (r > 0.995) { rarity = Rarity.GOLD; type = 'knife'; } else if (r > 0.98) rarity = Rarity.RED; else if (r > 0.94) rarity = Rarity.PINK; else if (r > 0.80) rarity = Rarity.PURPLE; else if (r > 0.50) rarity = Rarity.BLUE; }
+
+        let base = 1;
+        switch(rarity.id) {
+            case 'Consumer': base = 0.1 + Math.random(); break;
+            case 'Industrial': base = 2 + Math.random() * 5; break;
+            case 'Restricted': base = 10 + Math.random() * 25; break;
+            case 'Classified': base = 50 + Math.random() * 100; break;
+            case 'Covert': base = 250 + Math.random() * 400; break;
+            case 'Knives/Gloves': base = 1500 + Math.random() * 5000; break;
+        }
+        let val = base * (tier * 0.5);
+        if(rarity.id === 'Consumer') val = Cases[tier-1].cost * 0.1;
+
+        return {
+            id: Math.random().toString(36),
+            name: `${rarity.id.toUpperCase()} SKIN`,
+            rarity: rarity,
+            icon: getRandomIcon(type),
+            value: parseFloat(val.toFixed(2))
+        };
+    }
+
+    function createCardHTML(item, width = 'w-48') {
+        // Price Hidden during spin
+        return `
+                <div class="flex-shrink-0 ${width} h-full mx-1 rounded-xl item-card ${item.rarity.class} flex flex-col items-center justify-center group relative overflow-hidden border border-white/5">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10"></div>
+                    <i class="fa-solid ${item.icon} text-7xl mb-6 text-white/90 z-20 transform group-hover:scale-110 transition duration-500" style="filter: drop-shadow(0 4px 20px ${item.rarity.color}80)"></i>
+                    <div class="z-20 text-center w-full px-4 relative">
+                         <div class="absolute inset-x-0 bottom-0 h-1 bg-${item.rarity.color} opacity-50 blur-md"></div>
+                        <div class="text-xs font-black text-slate-300 uppercase tracking-widest truncate relative z-10">${item.name}</div>
+                    </div>
+                </div>
+            `;
+    }
+
+    // --- ANIMATION ENGINE ---
+    async function spinReel(elementId, tier, fixedWinner = null, isSmall = false) {
+        const strip = document.getElementById(elementId);
+        const w = isSmall ? CARD_WIDTH_SMALL : CARD_WIDTH;
+        const winnerIndex = 35;
+        const totalItems = 50;
+        const winner = fixedWinner || generateLoot(tier);
+
+        let html = '';
+        for(let i=0; i<totalItems; i++) {
+            const item = (i === winnerIndex) ? winner : generateLoot(tier);
+            const sizeClass = isSmall ? 'w-[152px]' : 'w-[192px]';
+            html += createCardHTML(item, sizeClass);
+        }
+        strip.innerHTML = html;
+
+        strip.style.transition = 'none'; strip.style.transform = 'translateX(0px)'; strip.offsetHeight;
+
+        const containerW = strip.parentElement.offsetWidth;
+        const centerItem = (winnerIndex * w) + (w/2);
+        const centerContainer = containerW / 2;
+        const offset = Math.floor(Math.random() * (w/2)) - (w/4);
+        const translate = -1 * (centerItem - centerContainer + offset);
+
+        strip.style.transition = 'transform 5s cubic-bezier(0.15, 0, 0.15, 1)';
+        strip.style.transform = `translateX(${translate}px)`;
+
+        await new Promise(r => setTimeout(r, 5000));
+
+        const cards = strip.children;
+        if(cards[winnerIndex]) {
+            cards[winnerIndex].classList.add('ring-2', `ring-[${winner.rarity.color}]`, 'shadow-neon');
+            cards[winnerIndex].style.zIndex = 50;
+        }
+        return winner;
+    }
+
+    // --- CASE OPENING ---
+    function initCases() {
+        const grid = document.getElementById('cases-grid');
+        const picker = document.getElementById('battle-case-picker');
+
+        Cases.forEach(c => {
+            // Main Grid Card
+            const div = document.createElement('div');
+            div.className = 'glass rounded-2xl p-6 border-accent/20 hover:border-accent/60 cursor-pointer transition-all hover:-translate-y-2 group relative overflow-hidden shadow-lg';
+            div.innerHTML = `
+                    <div class="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent group-hover:from-accent/20 transition duration-500"></div>
+                    <div class="flex justify-between items-start mb-6 relative z-10">
+                        <span class="text-xs font-black tracking-widest bg-black/40 px-3 py-1 rounded-full text-slate-400 border border-white/5">TIER ${c.tier}</span>
+                        <i class="fa-solid ${c.icon} ${c.color} text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.2)] group-hover:scale-110 transition duration-300"></i>
+                    </div>
+                    <h3 class="font-black text-white italic uppercase text-xl tracking-wider relative z-10 mb-2">${c.name}</h3>
+                    <div class="text-gold font-mono font-bold text-lg relative z-10 flex items-center gap-2">
+                        <i class="fa-solid fa-coins text-sm"></i> ${c.cost.toFixed(2)}
+                    </div>
+                `;
+            div.onclick = () => openCasePreview(c);
+            grid.appendChild(div);
+
+            // Battle Picker Item
+            const bBtn = document.createElement('div');
+            bBtn.className = 'glass-panel-dark border-accent/20 rounded-xl cursor-pointer p-3 flex flex-col items-center justify-center hover:bg-accent/10 transition h-24 relative group border hover:border-accent/50';
+            bBtn.innerHTML = `
+                    <i class="fa-solid ${c.icon} ${c.color} text-2xl mb-2 group-hover:scale-110 transition"></i>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 text-center leading-none tracking-wider">${c.name}</span>
+                    <span class="text-xs text-gold font-mono font-bold absolute bottom-1">${c.cost}</span>
+                `;
+            bBtn.onclick = () => addBattleCase(c);
+            picker.appendChild(bBtn);
+        });
+    }
+
+    function openCasePreview(c) {
+        state.activeCase = c;
+        document.getElementById('view-cases').classList.add('hidden-view');
+        document.getElementById('case-opener').classList.remove('hidden-view');
+        document.getElementById('opening-case-name').innerText = c.name;
+        document.getElementById('btn-cost-display').innerText = `Cost: ${c.cost.toFixed(2)}`;
+        document.getElementById('opening-case-icon-bg').className = `fa-solid ${c.icon} text-9xl ${c.color}`;
+        document.getElementById('case-strip').innerHTML = '';
+        document.getElementById('case-strip').style.transform = 'translateX(0)';
+    }
+
+    function closeCaseOpener() {
+        if(state.isSpinning) return;
+        document.getElementById('view-cases').classList.remove('hidden-view');
+        document.getElementById('case-opener').classList.add('hidden-view');
+    }
+
+    async function triggerCaseSpin() {
+        if(state.isSpinning) return;
+        if(state.balance < state.activeCase.cost) return alert("Insufficient Funds");
+
+        state.isSpinning = true;
+        updateBalance(-state.activeCase.cost);
+
+        const winner = await spinReel('case-strip', state.activeCase.tier, null, false);
+
+        setTimeout(() => {
+            const m = document.getElementById('win-modal');
+            document.getElementById('modal-icon').innerHTML = `<i class="fa-solid ${winner.icon}" style="color:${winner.rarity.color}"></i>`;
+            document.getElementById('modal-name').innerText = winner.name;
+            document.getElementById('modal-value').innerText = winner.value.toFixed(2);
+            document.getElementById('modal-glow').style.backgroundColor = winner.rarity.color;
+
+            const rEl = document.getElementById('modal-rarity');
+            rEl.innerText = winner.rarity.id;
+            rEl.style.color = winner.rarity.color;
+            rEl.style.borderColor = winner.rarity.color;
+
+            m.classList.remove('hidden-view');
+            updateBalance(winner.value);
+            state.isSpinning = false;
+        }, 500);
+    }
+
+    function closeModal() { document.getElementById('win-modal').classList.add('hidden-view'); }
+
+    // --- BATTLE LOGIC ---
+    function setBattleMode(m) {
+        state.battle.mode = m;
+        document.querySelectorAll('.battle-mode-btn').forEach(b => {
+            b.classList.remove('bg-accent', 'border-accent', 'text-white', 'glass');
+            if(b.dataset.mode === m) b.classList.add('bg-accent', 'border-accent', 'text-white', 'shadow-neon');
+            else b.classList.add('glass', 'text-slate-400');
+        });
+        state.battle.lineup = []; renderLineup();
+    }
+
+    function addBattleCase(c) { state.battle.lineup.push(c); renderLineup(); }
+
+    function renderLineup() {
+        const el = document.getElementById('battle-lineup');
+        const msg = document.getElementById('battle-empty-msg');
+        msg.style.display = state.battle.lineup.length ? 'none' : 'block';
+
+        Array.from(el.children).forEach(child => { if(child.id !== 'battle-empty-msg') el.removeChild(child); });
+
+        let cost = 0;
+        state.battle.lineup.forEach((c, i) => {
+            cost += c.cost;
+            const div = document.createElement('div');
+            div.className = 'flex-shrink-0 w-20 h-24 glass-panel-dark border-accent/20 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-red-500 relative group transition-all hover:-translate-y-1';
+            div.innerHTML = `<i class="fa-solid ${c.icon} ${c.color} text-2xl mb-2 group-hover:scale-110 transition"></i><span class="text-[10px] font-bold text-gold font-mono">${c.cost}</span><div class="absolute inset-0 bg-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl pointer-events-none"></div><i class="fa-solid fa-xmark text-white absolute opacity-0 group-hover:opacity-100 transition-opacity"></i>`;
+            div.onclick = () => { state.battle.lineup.splice(i, 1); renderLineup(); }
+            el.appendChild(div);
+        });
+
+        document.getElementById('battle-cost').innerText = cost.toFixed(2);
+        document.getElementById('battle-rounds-count').innerText = state.battle.lineup.length;
+    }
+
+    async function startBattle() {
+        if(!state.battle.lineup.length) return;
+        const cost = parseFloat(document.getElementById('battle-cost').innerText);
+        if(state.balance < cost) return alert("Insufficient Funds");
+
+        state.isSpinning = true;
+        updateBalance(-cost);
+
+        document.getElementById('battle-config').classList.add('hidden-view');
+        document.getElementById('battle-arena').classList.remove('hidden-view');
+        setupArena();
+
+        const lineup = state.battle.lineup;
+        document.getElementById('arena-total-rounds').innerText = lineup.length;
+        let scoreA = 0; let scoreB = 0;
+
+        for(let round=0; round<lineup.length; round++) {
+            document.getElementById('arena-round').innerText = round + 1;
+            const activeCase = lineup[round];
+            const promises = state.battle.players.map(p => spinReel(`player-reel-${p.id}`, activeCase.tier, null, true));
+            const results = await Promise.all(promises);
+
+            results.forEach((item, idx) => {
+                const p = state.battle.players[idx];
+                p.total += item.value;
+                document.getElementById(`score-p${p.id}`).innerText = p.total.toFixed(2);
+                if(p.team === 'A') scoreA += item.value; else scoreB += item.value;
+            });
+
+            const elA = document.getElementById('team-a-total'); const elB = document.getElementById('team-b-total');
+            if(elA) elA.innerText = scoreA.toFixed(2); if(elB) elB.innerText = scoreB.toFixed(2);
+            await new Promise(r => setTimeout(r, 1000));
+        }
+        endBattle();
+    }
+
+    function setupArena() {
+        const container = document.getElementById('arena-container'); container.innerHTML = '';
+        const mode = state.battle.mode; state.battle.players = [];
+
+        if (mode === '2v2') {
+            container.className = "grid grid-cols-2 gap-12 h-full pb-8";
+            // T SIDE
+            container.innerHTML += `<div class="glass-panel-dark rounded-3xl border-t-4 border-t-red-500 p-6 flex flex-col relative overflow-hidden shadow-neon-t"><div class="absolute inset-0 bg-gradient-to-b from-red-900/30 to-transparent pointer-events-none"></div><div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black border-2 border-red-500 rounded-full px-6 py-2 text-red-500 font-black z-10 uppercase tracking-widest shadow-lg">T-SIDE</div><div class="text-center mb-6 mt-4 relative z-10"><div class="text-xs text-red-400 font-black uppercase tracking-widest mb-1">Total Winnings</div><div id="team-a-total" class="text-4xl font-mono font-black text-white text-shadow-lg">0.00</div></div><div class="flex-grow grid grid-rows-2 gap-6 relative z-10" id="team-a-slots"></div></div>`;
+            // CT SIDE
+            container.innerHTML += `<div class="glass-panel-dark rounded-3xl border-t-4 border-t-blue-500 p-6 flex flex-col relative overflow-hidden shadow-neon-ct"><div class="absolute inset-0 bg-gradient-to-b from-blue-900/30 to-transparent pointer-events-none"></div><div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black border-2 border-blue-500 rounded-full px-6 py-2 text-blue-500 font-black z-10 uppercase tracking-widest shadow-lg">CT-SIDE</div><div class="text-center mb-6 mt-4 relative z-10"><div class="text-xs text-blue-400 font-black uppercase tracking-widest mb-1">Total Winnings</div><div id="team-b-total" class="text-4xl font-mono font-black text-white text-shadow-lg">0.00</div></div><div class="flex-grow grid grid-rows-2 gap-6 relative z-10" id="team-b-slots"></div></div>`;
+            createPlayerSlot(0, 'You', 'A', 'team-a-slots'); createPlayerSlot(1, 'Bot Alpha', 'A', 'team-a-slots');
+            createPlayerSlot(2, 'Bot Bravo', 'B', 'team-b-slots'); createPlayerSlot(3, 'Bot Charlie', 'B', 'team-b-slots');
+        } else {
+            let cols = 'grid-cols-2'; if(mode === '1v1v1') cols = 'grid-cols-3'; if(mode === '1v1v1v1') cols = 'grid-cols-4';
+            container.className = `grid ${cols} gap-6 h-full pb-8`;
+            let count = 2; if(mode === '1v1v1') count = 3; if(mode === '1v1v1v1') count = 4;
+            for(let i=0; i<count; i++) { const wrapper = document.createElement('div'); wrapper.id = `ffa-slot-${i}`; wrapper.className = "h-full"; container.appendChild(wrapper); createPlayerSlot(i, i===0 ? 'You' : `Bot ${i}`, 'A', `ffa-slot-${i}`); }
+        }
+    }
+
+    function createPlayerSlot(id, name, team, parentId) {
+        state.battle.players.push({ id, name, team, total: 0 });
+        const parent = document.getElementById(parentId);
+        let borderColor = team === 'A' ? 'border-red-500/50' : 'border-blue-500/50';
+        if(!document.getElementById('team-a-slots')) borderColor = 'border-accent/30';
+        const div = document.createElement('div');
+        div.className = `glass-panel-dark rounded-2xl border-b-4 ${borderColor} overflow-hidden flex flex-col h-full shadow-lg relative`;
+        div.innerHTML = `<div class="bg-black/40 p-3 flex justify-between items-center px-6 border-b border-white/5"><span class="font-black text-sm uppercase tracking-widest text-slate-300">${name}</span><span id="score-p${id}" class="text-gold font-mono text-lg font-bold drop-shadow">0.00</span></div><div class="reel-container flex-grow relative bg-black/80"><div class="laser-line"></div><div id="player-reel-${id}" class="reel-strip items-center"></div></div>`;
+        parent.appendChild(div);
+    }
+
+    function endBattle() {
+        const players = state.battle.players; let title = "Result"; let msg = ""; let winAmt = 0;
+        const totalPot = players.reduce((a,b) => a + b.total, 0);
+        if(state.battle.mode === '2v2') {
+            const scoreA = players[0].total + players[1].total; const scoreB = players[2].total + players[3].total;
+            if(scoreA > scoreB) { title = "T-SIDE WINS"; msg = `Your team won the pot of ${totalPot.toFixed(2)}`; winAmt = totalPot; } else { title = "CT-SIDE WINS"; msg = "Better luck next time."; }
+        } else {
+            const sorted = [...players].sort((a,b) => b.total - a.total);
+            if(sorted[0].id === 0) { title = "VICTORY"; msg = `You claimed the pot of ${totalPot.toFixed(2)}`; winAmt = totalPot; } else { title = "DEFEAT"; msg = `${sorted[0].name} won with ${sorted[0].total.toFixed(2)}`; }
+        }
+        if(winAmt > 0) updateBalance(winAmt);
+        document.getElementById('result-title').innerText = title; document.getElementById('result-msg').innerText = msg;
+        document.getElementById('result-overlay').classList.remove('hidden-view');
+    }
+    function closeResult() { document.getElementById('result-overlay').classList.add('hidden-view'); document.getElementById('battle-arena').classList.add('hidden-view'); document.getElementById('battle-config').classList.remove('hidden-view'); state.battle.lineup = []; renderLineup(); state.isSpinning = false; }
+
+    // --- ROULETTE ---
+    async function playRoulette(betColor) {
+        if(state.isSpinning) return; const amt = parseFloat(document.getElementById('roulette-bet').value); if(state.balance < amt || amt <= 0) return alert("Invalid Bet");
+        state.isSpinning = true; updateBalance(-amt);
+        const strip = document.getElementById('roulette-strip'); const nums = [1, 14, 2, 13, 3, 12, 4, 0, 11, 5, 10, 6, 9, 7, 8]; const REPEAT = 5; let html = '';
+        for(let i=0; i<REPEAT*nums.length; i++) {
+            const n = nums[i % nums.length]; let bg = 'bg-red-600'; if(n === 0) bg = 'bg-green-500'; else if(n > 7) bg = 'bg-blue-600';
+            html += `<div class="flex-shrink-0 w-32 h-32 mx-1 rounded-xl ${bg} flex items-center justify-center border-b-4 border-black/30 text-5xl font-black text-white shadow-lg relative overflow-hidden"><div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div><span class="relative z-10 drop-shadow-lg">${n}</span></div>`;
+        }
+        strip.innerHTML = html; strip.style.transition = 'none'; strip.style.transform = 'translateX(0)'; strip.offsetHeight;
+        const cardW = 136; const rIndex = Math.floor(Math.random() * nums.length); const tIndex = (nums.length * 3) + rIndex; const containerW = strip.parentElement.offsetWidth; const center = (tIndex * cardW) + (cardW/2); const offset = Math.floor(Math.random()*40)-20; const trans = -1 * (center - (containerW/2) + offset);
+        strip.style.transition = 'transform 5s cubic-bezier(0.1, 0, 0.1, 1)'; strip.style.transform = `translateX(${trans}px)`;
+        await new Promise(r => setTimeout(r, 5000));
+        const winNum = nums[rIndex]; let winColor = 'green'; if(winNum >= 1 && winNum <= 7) winColor = 'red'; if(winNum >= 8) winColor = 'black';
+        let payout = 0; if(betColor === winColor) { payout = amt * (winColor === 'green' ? 14 : 2); updateBalance(payout); document.getElementById('roulette-msg').innerText = `WIN: ${payout.toFixed(2)}`; document.getElementById('roulette-msg').className = "text-center mt-6 h-8 text-2xl font-bold text-green-500 font-mono drop-shadow-lg animate-pulse"; } else { document.getElementById('roulette-msg').innerText = "LOSS"; document.getElementById('roulette-msg').className = "text-center mt-6 h-8 text-2xl font-bold text-red-500 font-mono drop-shadow-lg"; }
+        state.isSpinning = false;
+    }
+
+    function switchView(v) {
+        ['roulette','cases','battles'].forEach(id => { document.getElementById('view-'+id).classList.add('hidden-view'); document.getElementById('nav-'+id).classList.remove('active'); });
+        document.getElementById('view-'+v).classList.remove('hidden-view'); document.getElementById('nav-'+v).classList.add('active');
+    }
+
+    initCases(); setBattleMode('1v1');
+</script>
+</body>
+</html>

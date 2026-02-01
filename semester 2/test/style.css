@@ -1,0 +1,73 @@
+body {
+    width: 95%;
+    text-align: center;
+}
+
+header {
+    background-image: url("images/bgsky3.jpg");
+    height: 200px;
+}
+
+header p {
+    color: darkblue;
+    font-size: 240%;
+    font-weight: bold;
+    font-style: italic;
+    font-family: arial;
+}
+
+header p:first-of-type {
+    font-size: 300%;
+}
+
+img.thymen {
+    position: absolute;
+    top: 60px;
+    right: 250px;
+    z-index: 1;
+    background-size: cover;
+}
+
+.news {
+    width: 25%;
+    background-color: #dddddd;
+    border: 1px #999999 solid;
+    float: right;
+    box-sizing: border-box;
+}
+
+.news h3 {
+    color: white;
+    background-color: blue;
+    text-align: center;
+    font-size: 120%;
+}
+
+.news p {
+    color: #666666;
+    font-size: 90%;
+    padding: 0 10px;
+}
+
+main {
+    width: 75%;
+    margin-right: 10px;
+    float: left;
+    box-sizing: border-box;
+}
+
+.logo {
+    float: left;
+}
+
+.intro {
+    float: left;
+    background-color: white;
+    color: black;
+    text-align: justify;
+    box-sizing: border-box;
+}
+
+footer {
+    clear: both;
+}
