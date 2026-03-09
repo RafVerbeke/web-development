@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invulformulier</title>
+</head>
+<body>
+<form action="#" method="POST">
+
+    <h3>Persoonlijke informatie</h3>
+    <label for="voornaam">Voornaam*:</label>
+    <input type="text" id="voornaam" name="voornaam" placeholder="Your first name">
+    <br>
+    <label for="familienaam">Familienaam*:</label>
+    <input type="text" id="familienaam" name="familienaam" placeholder="Your last name">
+
+    <h3>Sport</h3>
+    <p>Welke sport beoefen je?</p>
+    <input type="checkbox" id="sportLopen" name="sportLopen">
+    <label for="sportLopen">Lopen</label><br>
+    <input type="checkbox" id="sportZwemmen" name="sportZwemmen">
+    <label for="sportZwemmen">Zwemmen</label><br>
+    <input type="checkbox" id="sportRoeien" name="sportRoeien">
+    <label for="sportRoeien">Roeien</label>
+
+    <h3>Communicatievoorkeur</h3>
+    <p>Hoe kunnen we je bereiken?</p>
+    <input type="radio" id="comPost" name="communicatie" checked>
+    <label for="comPost">Per post</label><br>
+    <input type="radio" id="comEmail" name="communicatie">
+    <label for="comEmail">E-mail</label>
+
+    <h3>Favorieten</h3>
+    <label for="favFilm">Favoriete film:</label>
+    <input type="text" id="favFilm" name="favFilm"><br>
+
+    <label for="favQuote">Favoriete quote:</label>
+    <input type="text" id="favQuote" name="favQuote" placeholder="Schrijf je favoriete quote"><br>
+
+    <label for="favEten">Favoriete eten:</label>
+    <select id="favEten" name="favEten">
+        <option value="hamburger">Hamburger</option>
+        <option value="hotdog">Hot-dog</option>
+        <option value="pizza" selected>Pizza</option>
+    </select><br>
+
+    <label for="favBrowser">Favoriete browser:</label>
+    <input type="text" id="favBrowser" name="favBrowser">
+
+    <h3>Beveiliging & contact</h3>
+    <label for="wachtwoord">Wachtwoord*:</label>
+    <input type="password" id="wachtwoord" name="wachtwoord"><br>
+
+    <label for="email">E-mailadres:</label>
+    <input type="email" id="email" name="email" placeholder="Geef je e-mailadres in"><br>
+
+    <label for="favSite">Favoriete site:</label>
+    <input type="url" id="favSite" name="favSite" placeholder="Geef de URL van je favoriete site">
+
+    <h3>Extra informatie</h3>
+    <label for="getalKlein">Favoriete getal tussen 1-10:</label>
+    <input type="number" id="getalKlein" name="getalKlein"><br>
+
+    <label for="getalGroot">Favoriete getal tussen 11-1000:</label>
+    <input type="range" id="getalGroot" name="getalGroot"><br>
+
+    <label for="geboortedatum">Wanneer ben je geboren?</label>
+    <input type="date" id="geboortedatum" name="geboortedatum"><br>
+
+    <label for="postcode">Belgische postcode*:</label>
+    <input type="text" id="postcode" name="postcode" placeholder="9999">
+
+    <h3>Varia</h3>
+    <label for="zoeken">Zoeken naar iets:</label>
+    <input type="search" id="zoeken" name="zoeken"><br>
+
+    <label for="kleur">Wat is je lievelingskleur?</label>
+    <input type="color" id="kleur" name="kleur"><br>
+
+    <input type="file" id="bestand" name="bestand"><br>
+
+    <input type="submit" name="btnBewaar" value="Submit">
+</form>
+</body>
+</html>
